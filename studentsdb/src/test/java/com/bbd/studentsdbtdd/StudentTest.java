@@ -41,6 +41,8 @@ public class StudentTest {
 	@Test
 	public void testInsert(){
 		assertEquals(true, studentList.insertStudent(student1));
+		assertEquals(true, studentList.insertStudent(student2));
+		assertEquals(true, studentList.insertStudent(student3));
 	}
 	
 	@Test
