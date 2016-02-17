@@ -13,116 +13,63 @@ public class StudentList {
 
 	private ArrayList<Student> mStudents = null;
 	private Connection mConnection = null;
+	private IStudentDAO mStudentDAO;
 	
-	private final String SQL_GET_STUDENTS = "SELECT * FROM students;";
-	private final String SQL_DELETE_STUDENTS = "TRUNCATE TABLE students;";
-	private final String SQL_ADD_STUDENT = "INSERT INTO students (NAME, AGE, CITY) VALUES (?, ?, ?);";
+	public StudentList(IStudentDAO dao) {
+		this.mStudentDAO = dao;
+		mStudents = new ArrayList<Student>();
+	}
 	
-	public StudentList(Connection conn) {
-		this.mConnection = conn;
+	public StudentList() throws SQLException {
+		this.mConnection = DriverManager.getConnection("jdbc:derby://localhost:1527/c:\\temp\\db;");
+		mStudents = new ArrayList<Student>();
+		this.mStudentDAO = new StudentDAO(this.mConnection);
 	}
 	
 	public ArrayList<Student> getStudents() {
-		ArrayList<Student> students = new ArrayList<Student>();
-		
-		try {
-			Statement statement = mConnection.createStatement();
-			ResultSet rs = statement.executeQuery(SQL_GET_STUDENTS);
-			
-			while (rs.next()) {
-				int age = rs.getInt(2);
-				String name = rs.getString(1);
-				String city = rs.getString(3);
-				
-				students.add(new Student(
-						name,
-						age,
-						city
-						));				
-			}
-			
-			this.mStudents.addAll(students);
-		} catch (SQLException ex) {
-			ex.getMessage();
-		} finally {			
-            try {
-            	mConnection.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-		}
-		
-		return students;
+		mStudents = this.mStudentDAO.getStudents();
+					
+		return mStudents;
 	}
 	
 	public boolean clearStudents() {
-		boolean success = false;
-		
-		try {			
-			PreparedStatement statement = mConnection.prepareStatement(SQL_DELETE_STUDENTS);
-			statement.executeUpdate();
-			
-			this.mStudents = null;
-			
-			success = true;
-		} catch (SQLException ex) {
-			ex.getMessage();
-		} finally {			
-            try {
-            	mConnection.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-		}
+		boolean success = this.mStudentDAO.clearStudents();
 		
 		return success;
 	}
 	
-	public int addStudent(Student student) {
-		int id = 0;
-		
-		try {						
-			PreparedStatement statement = mConnection.prepareStatement(SQL_ADD_STUDENT);
-			
-			statement.setString(1, student.getName());
-			statement.setInt(2, student.getAge());
-			statement.setString(3, student.getCity());
-								
-			id = statement.executeUpdate();	
-			
-			this.mStudents.add(student);
-		} catch (SQLException ex) {
-			ex.getMessage();
-		} finally {			
-            try {
-            	mConnection.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-		}
+	public boolean addStudent(Student student) {
+		boolean id = this.mStudentDAO.addStudent(student);
+		this.mStudents.add(student);
 		
 		return id;
 	}
 	
-	public static void main(String[] args) {
-		Connection conn;
-		
+	public static void main(String[] args) {				
 		try {
-			conn = DriverManager.getConnection("jdbc:derby://localhost:1527/c:\\temp\\db;");
 			
-			StudentList students = new StudentList(conn);
-			Student stud = new Student("Tim", 20, "City");
+			StudentList students = new StudentList();		
 			
+			students.clearStudents();
+			
+			Student stud = new Student(1, "Tim", 20, "City");
+			System.out.println(stud);
 			students.addStudent(stud);
+			
+			System.out.println(students.getStudents());
 			
 		} catch (SQLException e) {		
 			e.printStackTrace();
-		}
-		
-		
-		
-		
+		} 							
 
+	}
+
+	public IStudentDAO getStudentDAO() {
+		return mStudentDAO;
+	}
+
+	public void setStudentDAO(IStudentDAO mStudentDAO) {
+		this.mStudentDAO = mStudentDAO;
 	}
 
 }

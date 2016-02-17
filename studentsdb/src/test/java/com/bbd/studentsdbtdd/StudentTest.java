@@ -25,11 +25,10 @@ public class StudentTest {
 	//setup the 3 Student objects - getName, getAge, getCity
 	@Before
 	public void setUp() throws SQLException {
-		Connection conn = DriverManager.getConnection("jdbc:derby://localhost:1527/c://temp//db");
-		studentList = new StudentList(conn);
-		student1 = new Student("Amy", 18, "Johannesburg");
-		student2 = new Student("Mongezi", 24, "Johannesburg");
-		student3 = new Student("Rory", 28, "Johannesburg");
+		studentList = new StudentList();
+		student1 = new Student(1, "Amy", 18, "Johannesburg");
+		student2 = new Student(2, "Mongezi", 24, "Johannesburg");
+		student3 = new Student(3, "Rory", 28, "Johannesburg");
 		
 	}
 
@@ -44,9 +43,9 @@ public class StudentTest {
 	
 	@Test
 	public void testInsert(){
-		assertEquals(true, studentList.insertStudent(student1));
-		assertEquals(true, studentList.insertStudent(student2));
-		assertEquals(true, studentList.insertStudent(student3));
+		assertEquals(true, studentList.addStudent(student1));
+		assertEquals(true, studentList.addStudent(student2));
+		assertEquals(true, studentList.addStudent(student3));
 	}
 	
 	@Test

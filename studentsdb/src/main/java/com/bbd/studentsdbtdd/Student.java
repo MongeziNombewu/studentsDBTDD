@@ -2,14 +2,16 @@ package com.bbd.studentsdbtdd;
 
 public class Student {
 
+	private int mID;
 	private String mName;
 	private int mAge;
 	private String mCity;
 	
-	public Student(String name, int age, String city) {
+	public Student(int id, String name, int age, String city) {
 		this.setAge(age);
 		this.setCity(city);
 		this.setName(name);
+		this.mID = id;
 	}
 
 	public String getName() {
@@ -36,5 +38,16 @@ public class Student {
 		this.mCity = mCity;
 	}
 	
-	
+	@Override
+	public String toString() {
+		return "Name: " + this.mName;
+	}
+
+	public int getID() {
+		return mID;
+	}
+
+	public void setID(int mID) {
+		this.mID = mID;
+	}
 }
