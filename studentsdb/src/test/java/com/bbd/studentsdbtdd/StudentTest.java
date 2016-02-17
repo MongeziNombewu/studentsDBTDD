@@ -8,7 +8,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import org.junit.Before;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
+
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 
 
 public class StudentTest {
